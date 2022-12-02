@@ -4,28 +4,21 @@ using System.Linq;
 
 namespace DAL.General
 {
-    static partial class EmployeeDtoConverter
+    static partial class @|table_name|@DtoConverter
     {
-        public static EmployeeDto ToEmployeeDto(this Employee _Employee)
+        public static @|table_name|@Dto To@|table_name|@Dto(this @|table_name|@ _@|table_name|@)
         {
-            var result = new EmployeeDto
+            var result = new @|table_name|@Dto
             {
-                id = _Employee.id,
-                surName = _Employee.surName,
-                firstName = _Employee.firstName,
-                secondName = _Employee.secondName,
-
+                @|template_toDto|@
             };
             return result;
         }
-        public static Employee ToEmployee(this EmployeeDto dto)
+        public static @|table_name|@ To@|table_name|@(this @|table_name|@Dto dto)
         {
-            var result = new Employee
+            var result = new @|table_name|@
             {
-                id = dto.id,
-                surName = dto.surName,
-                firstName = dto.firstName,
-                secondName = dto.secondName,
+                @|template_toEntity|@
             };
             return result;
         }

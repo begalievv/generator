@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace App.General
 {
-    public interface IEmployeeRepository : IBaseCrudRepository<EmployeeDto, int>
+    public interface I@|table_name|@Repository : IBaseCrudRepository<@|table_name|@Dto, int>
     {
-	    List<EmployeeDto> GetByidSex(int idSex);
+	    @|template_irepository|@
     }
 }

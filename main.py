@@ -1,6 +1,6 @@
 import os, shutil
 from funcs import get_tables
-from codes import fill_file
+from codes import fill_file, fill_bfile
 
 def main():
 
@@ -10,11 +10,12 @@ def main():
 
     tables_data = get_tables()
 
-    for table_data in tables_data[:7]:
+    for table_data in tables_data:
         table_name = table_data["table"]
 
         for folder in os.walk("source"):
             if(folder[0] == "source"): continue
+            if(folder[0] == "source\\bfiles"): continue
             if not os.path.exists(folder[0].replace('source', 'result')):
                 os.makedirs(folder[0].replace('source', 'result'))
 
@@ -34,7 +35,20 @@ def main():
                 f.write(text)
                 f.close()
 
+    for folder in os.walk("source/bfiles"):
+        if not os.path.exists(folder[0].replace('source', 'result')):
+            os.makedirs(folder[0].replace('source', 'result'))
+        
+        for file in folder[2]:
+            with open(folder[0] + '/' + file, encoding='utf-8') as f:
+                cont = f.read()
+                
+                text = fill_bfile(cont, tables_data)
 
+            f = open('result/bfiles/' + file, "a", encoding='utf-8')
+            
+            f.write(text)
+            f.close()
 
 
 main()

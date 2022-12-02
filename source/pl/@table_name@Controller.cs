@@ -13,68 +13,51 @@ namespace PL.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class @|table_name|@Controller : ControllerBase
     {
-        private readonly IEmployeeService _EmployeeService;
-        private readonly IModelConverter<EmployeeModel, EmployeeDto> _converter;
+        private readonly I@|table_name|@Service _@|table_name|@Service;
+        private readonly IModelConverter<@|table_name|@Model, @|table_name|@Dto> _converter;
 
-        public EmployeeController(IEmployeeService service,
-            IModelConverter<EmployeeModel, EmployeeDto> converter,
-            IEmployeeRoleService applicationRoleService
-            )
+        public @|table_name|@Controller(I@|table_name|@Service service, IModelConverter<@|table_name|@Model, @|table_name|@Dto> converter)
         {
-            _EmployeeService = service;
+            _@|table_name|@Service = service;
             _converter = converter;
         }
 
         [HttpPost]
         [Route("AddOrUpdate")]
-        public int AddOrUpdate(EmployeeModel model)
+        public int AddOrUpdate(@|table_name|@Model model)
         {
             if (model.IsNew())
             {
                 var addDto = _converter.ToDto(model);
-                var added = _EmployeeService.Add(addDto);
+                var added = _@|table_name|@Service.Add(addDto);
                 return added;
             }
             else
             {
                 var addDto = _converter.ToDto(model);
-                var updated = _EmployeeService.Update(addDto);
+                var updated = _@|table_name|@Service.Update(addDto);
                 return updated;
             }
         }
 
         [HttpGet]
         [Route("GetAll")]
-        public List<EmployeeDto> GetAll()
+        public List<@|table_name|@Dto> GetAll()
         {
-            var items = _EmployeeService.GetAll();
+            var items = _@|table_name|@Service.GetAll();
             return items;
         }
 
         [HttpGet]
         [Route("GetOneById")]
-        public EmployeeDto GetOneById(int id)
+        public @|table_name|@Dto GetOneById(int id)
         {
-            var item = _EmployeeService.GetOneByKey(id);
+            var item = _@|table_name|@Service.GetOneByKey(id);
             return item;
         }
 
-        [HttpPost]
-        [Route("Delete")]
-        public IActionResult Delete([FromBody] int id)
-        {
-            _EmployeeService.Remove(id);
-            return Ok(new { result = "true" });
-        }
-
-        [HttpGet]
-        [Route("GetByidSex")]
-        public List<EmployeeDto> GetByidSex(int idSex)
-        {
-            var items = _EmployeeService.GetByidSex(idSex);
-            return items;
-        }
+        @|template_controller|@   
     }
 }

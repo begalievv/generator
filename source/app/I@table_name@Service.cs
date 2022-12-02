@@ -3,8 +3,8 @@ using Core.Services.BaseCrudService;
 
 namespace App.General
 {
-    public interface IEmployeeService: IBaseCrudService<EmployeeDto, int>
+    public interface I@|table_name|@Service: IBaseCrudService<@|table_name|@Dto, int>
     {
-	    List<EmployeeDto> GetByidSex(int idSex);
+	    @|template_iservice|@
     }
 }

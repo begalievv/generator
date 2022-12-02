@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 namespace DAL.EF.Entities
 {
-    public partial class Employee : IEntityWithId<int>
+    public partial class @|table_name|@ : IEntityWithId<int>
     {
+        
     }
 }

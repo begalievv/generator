@@ -7,19 +7,15 @@ using PL.Base;
 
 namespace PL.General
 {
-    public class EmployeeConverter : IModelConverter<EmployeeModel, EmployeeDto>
+    public class @|table_name|@Converter : IModelConverter<@|table_name|@Model, @|table_name|@Dto>
     {
-        public EmployeeDto ToDto(EmployeeModel model)
+        public @|table_name|@Dto ToDto(@|table_name|@Model model)
         {
-            var result = new EmployeeDto
+            var result = new @|table_name|@Dto
             {
-                id = model.id,
-                surName = model.surName,
-                firstName = model.firstName,
+                @|template_converter|@
             };
             return result;
         }
-
-
     }
 }

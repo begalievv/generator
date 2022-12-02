@@ -8,6 +8,6 @@ namespace App.General
 {
     public class @|table_name|@Dto : IDtoWithId<int>
     {
-        @|template_1|@
+        @|template_dto|@
     }
 }
