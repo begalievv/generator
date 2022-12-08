@@ -4,6 +4,18 @@ from settings import CONNECTING_STRING, PRIMARY_KEY
 
 
 def get_tables():
+    main_tables = ["Employee", "Student", "Course", "Lesson", "Group"]
+    mtm_tables = {
+        "Subject": "CourseName", 
+        "LessonStatusHistory": "Lesson", 
+        "EmployeeInCourse": "Course", 
+        "EmployeeRole": "Employee",
+        "StudentInGroup": "Group",
+        "StudentInLesson": "Lesson",
+        "PassedCourse": "Student",
+        "StudentContact": "Student",
+        "CourseStatusHistory": "Course"
+    }
     cnxn = pyodbc.connect(CONNECTING_STRING)
     cursor = cnxn.cursor()
 
@@ -88,10 +100,32 @@ def get_tables():
         table['foreign_tables'] = f_table
         table['constraint_tables'] = c_table
 
+        table["is_mtm"] = False
+        table["main"] = ""
+        table["main_column"] = ""
+        table["is_main"] = False
+        table["mtms"] = []
+        
+        for key, value in mtm_tables.items():
+            if(key == table["table"]):
+                table["is_mtm"] = True
+                table["main"] = value
+                for i in range(len(f_table)):
+                    if(f_table[i][0] == value):
+                        table["main_column"] = f_table[i][1]
+            if(value == table["table"]):
+                table["is_main"] = True
+                for c_table ,c_column in table['constraint_tables']:
+                    if(c_table == key):
+                        table["mtms"].append([key, c_column])
+                        break
+
     return all_data
     # for table in all_data:
-    #     for column in table['columns']:
-    #         print(column.name, ' ---- ', column.is_foreign_key, ' ---- ', column.foreign_table)
+    #     print(table['table'], ' ----- ', table["mtms"])
+        # print(table['table'], ' ----- ', table["is_main"], ', ', table["mtms"])
+        # for column in table['columns']:
+        #     print(column.name, ' ---- ', column.is_foreign_key, ' ---- ', column.foreign_table)
 
 
 
