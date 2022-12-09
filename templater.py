@@ -19,44 +19,44 @@ def template_dto(table):
 
     for column in table["columns"]:
         if (column.type == 'nvarchar' or column.type == 'varchar'):
-            res = "public string " + column.name + " { get; set; }\n"
+            res = "public string " + column.name + " { get; set; }\n\t\t"
 
         elif (column.type == 'int'):
             if (column.nullable == True):
                 if (column.is_foreign_key == True):
                     res = "public int? " + column.name + \
-                        " { get; set; }\npublic string " + column.name + \
-                        "NavName { get; set; }\n"
+                        " { get; set; }\n\t\tpublic string " + column.name + \
+                        "NavName { get; set; }\n\t\t"
                 else:
-                    res = "public int? " + column.name + " { get; set; }\n"
+                    res = "public int? " + column.name + " { get; set; }\n\t\t"
             else:
                 if (column.is_foreign_key == True):
                     res = "public int " + column.name + \
-                        " { get; set; }\npublic string " + column.name + \
-                        "NavName { get; set; }\n"
+                        " { get; set; }\n\t\tpublic string " + column.name + \
+                        "NavName { get; set; }\n\t\t"
                 else:
-                    res = "public int " + column.name + " { get; set; }\n"
+                    res = "public int " + column.name + " { get; set; }\n\t\t"
 
         elif (column.type == 'bit'):
             if (column.nullable == True):
-                res = "public bool? " + column.name + " { get; set; }\n"
+                res = "public bool? " + column.name + " { get; set; }\n\t\t"
             else:
-                res = "public bool " + column.name + " { get; set; }\n"
+                res = "public bool " + column.name + " { get; set; }\n\t\t"
 
         elif (column.type == 'datetime'):
             if (column.nullable == True):
                 res = 'public DateTime? ' + column.name + \
-                    ' { get; set; }\n' + 'public string str' + \
-                    column.name + '\n{\nget\n{\nreturn ' + column.name + '.HasValue ? ' + \
+                    ' { get; set; }\n\t\t' + 'public string str' + \
+                    column.name + '\n\t\t{\n\t\t\tget\n\t\t\t{\n\t\t\t\treturn ' + column.name + '.HasValue ? ' + \
                     column.name + \
-                    '.Value.ToString("yyyy-MM-dd HH:mm") : null;\n}\nset\n{\n' + column.name + \
-                    ' = DateTime.ParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture);\n}\n}\n'
+                    '.Value.ToString("yyyy-MM-dd HH:mm") : null;\n\t\t\t}\n\t\t\tset\n\t\t\t{\n\t\t\t\t' + column.name + \
+                    ' = DateTime.ParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture);\n\t\t\t}\n\t\t}\n\t\t'
             else:
                 res = 'public DateTime ' + column.name + \
-                    ' { get; set; }\n' + 'public string str' + \
-                    column.name + '\n{\nget\n{\nreturn ' + column.name + \
-                    '.ToString("yyyy-MM-dd HH:mm");\n}\nset\n{\n' + column.name + \
-                    ' = DateTime.ParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture);\n}\n}\n'
+                    ' { get; set; }\n\t\t' + 'public string str' + \
+                    column.name + '\n\t\t{\n\t\t\tget\n\t\t\t{\n\t\t\t\treturn ' + column.name + \
+                    '.ToString("yyyy-MM-dd HH:mm");\n\t\t\t}\n\t\t\tset\n\t\t\t{\n\t\t\t\t' + column.name + \
+                    ' = DateTime.ParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture);\n\t\t\t}\n\t\t}\n\t\t'
         elif (column.type == 'varbinary'):
             continue
         else:
@@ -70,11 +70,18 @@ def template_service(table):
     table_name = table['table']
     for column in table["columns"]:
         if (column.is_foreign_key == True):
-            res = "public List<" + table_name + "Dto> GetBy" + column.name + \
-                '(int ' + column.name + \
-                  ')\n{\n_accessService.CheckAccess(_sessionProvider.UserId, _sessionProvider.UserName, ReadMedtodKey);\nreturn _' + \
-                table_name + 'Repository.GetBy' + \
-                column.name + '(' + column.name + ');\n}\n'
+            res = f"""
+        public List<{table_name}Dto> GetBy{column.name}(int {column.name})
+        {{
+            _accessService.CheckAccess(_sessionProvider.UserId, _sessionProvider.UserName, ReadMedtodKey);
+            return _{table_name}Repository.GetBy{column.name}({column.name});
+        }}
+        """
+            # res = "public List<" + table_name + "Dto> GetBy" + column.name + \
+            #     '(int ' + column.name + \
+            #       ')\n{\n_accessService.CheckAccess(_sessionProvider.UserId, _sessionProvider.UserName, ReadMedtodKey);\nreturn _' + \
+            #     table_name + 'Repository.GetBy' + \
+            #     column.name + '(' + column.name + ');\n}\n'
             result += res
     return result
 
@@ -97,7 +104,7 @@ def template_repository_include(table):
     table_name = table['table']
     for column in table["columns"]:
         if (column.is_foreign_key == True):
-            res = '.Include(x => x.' + column.name + 'Navigation)\n'
+            res = '.Include(x => x.' + column.name + 'Navigation)\n\t\t\t'
             result += res
     return result
 
@@ -108,7 +115,7 @@ def template_irepository(table):
     for column in table["columns"]:
         if (column.is_foreign_key == True):
             res = "List<" + table_name + "Dto> GetBy" + \
-                column.name + "(int " + column.name + ");\n"
+                column.name + "(int " + column.name + ");\n\t\t"
             result += res
     return result
 
@@ -119,7 +126,7 @@ def template_iservice(table):
     for column in table["columns"]:
         if (column.is_foreign_key == True):
             res = 'List<' + table_name + 'Dto> GetBy' + \
-                column.name + '(int ' + column.name + ');\n'
+                column.name + '(int ' + column.name + ');\n\t\t'
             result += res
     return result
 
@@ -128,10 +135,10 @@ def template_toDto(table):
     result = ""
     table_name = table['table']
     for column in table["columns"]:
-        res = column.name + ' = _' + table_name + '.' + column.name + ',\n'
+        res = column.name + ' = _' + table_name + '.' + column.name + ',\n\t\t\t\t'
         if (column.is_foreign_key == True):
             res += column.name + 'NavName = _' + table_name + \
-                '.' + column.name + 'Navigation?.name,\n'
+                '.' + column.name + 'Navigation?.name,\n\t\t\t\t'
         result += res
     return result
 
@@ -140,7 +147,7 @@ def template_toEntity(table):
     result = ""
     table_name = table['table']
     for column in table["columns"]:
-        res = column.name + ' = dto.' + column.name + ',\n'
+        res = column.name + ' = dto.' + column.name + ',\n\t\t\t\t'
         result += res
     return result
 
@@ -150,11 +157,20 @@ def template_controller(table):
     table_name = table['table']
     for column in table["columns"]:
         if (column.is_foreign_key == True):
-            res = '[HttpGet]\npublic List<' + table_name + \
-                'Dto> GetBy' + column.name + \
-                '(int ' + column.name + ')\n{\nvar items = _' + \
-                  table_name + 'Service.GetBy' + column.name + \
-                '(' + column.name + ');\nreturn items;\n}\n'
+            res = f"""
+        [HttpGet]
+        [Route("GetBy{column.name}")]
+        public List<{table_name}Dto> GetBy{column.name}(int {column.name})
+        {{
+            var items = _{table_name}Service.GetBy{column.name}({column.name});
+            return items;
+        }}
+        """
+            # res = '[HttpGet]\npublic List<' + table_name + \
+            #     'Dto> GetBy' + column.name + \
+            #     '(int ' + column.name + ')\n{\nvar items = _' + \
+            #       table_name + 'Service.GetBy' + column.name + \
+            #     '(' + column.name + ');\nreturn items;\n}\n'
             result += res
     return result
 
@@ -162,7 +178,7 @@ def template_controller(table):
 def template_converter(table):
     result = ""
     for column in table["columns"]:
-        res = column.name + ' = model.' + column.name + ',\n'
+        res = column.name + ' = model.' + column.name + ',\n\t\t\t\t'
         result += res
     return result
 
@@ -171,32 +187,54 @@ def template_model(table):
     result = ""
     for column in table["columns"]:
         if (column.type == 'nvarchar' or column.type == 'varchar'):
-            res = "public string " + column.name + " { get; set; }\n"
+            res = "public string " + column.name + " { get; set; }\n\t\t"
         elif (column.type == 'int'):
             if (column.nullable == True):
-                res = "public int? " + column.name + " { get; set; }\n"
+                res = "public int? " + column.name + " { get; set; }\n\t\t"
             else:
-                res = "public int " + column.name + " { get; set; }\n"
+                res = "public int " + column.name + " { get; set; }\n\t\t"
         elif (column.type == 'bit'):
             if (column.nullable == True):
-                res = "public bool? " + column.name + " { get; set; }\n"
+                res = "public bool? " + column.name + " { get; set; }\n\t\t"
             else:
-                res = "public bool " + column.name + " { get; set; }\n"
+                res = "public bool " + column.name + " { get; set; }\n\t\t"
         elif (column.type == 'datetime'):
             if (column.nullable == True):
-                res = 'public DateTime? ' + column.name + \
-                    ' { get; set; }\npublic string str' + column.name + \
-                    '\n{\nget\n{\nreturn ' + column.name + '.HasValue ? ' + \
-                    column.name + \
-                    '.Value.ToString("yyyy-MM-dd") : null;\n}\nset\n{\nDateTime date;\nif' + \
-                    ' (DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))\n{\n' + \
-                    column.name + '= null;\n}\n}\n}\n'
+                res = f"""public DateTime? {column.name} {{ get; set; }}
+        public string str{column.name}
+        {{
+            get
+            {{
+                return {column.name}.HasValue ? {column.name}.Value.ToString("yyyy-MM-dd HH:mm") : null;
+            }}
+            set
+            {{
+                DateTime date;
+                if (DateTime.TryParseExact(value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                {{
+                    {column.name} = date;
+                }}
+                else
+                {{
+                    {column.name} = null;
+                }}
+            }}
+        }}
+        """
             else:
-                res = 'public DateTime ' + column.name + \
-                    ' { get; set; }\npublic string str' + column.name + \
-                    '\n{\nget\n{\nreturn ' + column.name + \
-                    '.ToString("yyyy-MM-dd");\n}\nset\n{\n' + column.name + \
-                    ' = DateTime.ParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture);\n}\n}\n'
+                res = f"""public DateTime {column.name} {{ get; set; }}
+        public string str{column.name}
+        {{
+            get
+            {{
+                return {column.name}.ToString("yyyy-MM-dd HH:mm");
+            }}
+            set
+            {{
+                {column.name} = DateTime.ParseExact(value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            }}
+        }}
+        """
         elif (column.type == 'varbinary'):
             continue
         else:
@@ -231,6 +269,32 @@ def template_routes_import(table):
     f"import {table_name}ListView from 'src/views/{table_name}/{table_name}ListView';\n"
     return result
 
+def template_locale(table):
+    col = ""
+    i = 0
+    table_name = table['table']
+    for column in table["columns"]:
+        i += 1
+        if(column.is_foreign_key == True):
+            col += f'"{column.name}NavName": "{column.name}",\n\t\t'
+        else: 
+            col += f'"{column.name}": "{column.name}",\n\t\t'
+        if(len(table["columns"]) == i):
+            col = col[:-4]
+
+
+    res = f""""{table_name}AddEditView": {{
+    "entityTitle": "{table_name}",
+    {col}
+  }},
+  "{table_name}ListView": {{
+    "{table_name}": "{table_name}",
+    "entityTitle": "{table_name}",
+    {col}
+  }},
+  """
+    return res
+
 def template_routes_class(table):
     table_name = table['table']
     result = f"""{{ path: '{table_name}', element: <{table_name}ListView /> }},
@@ -241,11 +305,11 @@ def template_routes_class(table):
 def template_base_fields(table):
     result = ''
     table_name = table['table']
-    plural_table_name = to_plural(table_name)
 
     for column in table["columns"]:
-        if (column.name == PRIMARY_KEY): continue
-        if (column.is_foreign_key == True and table["main_column"] != column.name):
+        if (column.name == PRIMARY_KEY or table["main_column"] == column.name): continue
+        if (column.is_foreign_key == True):
+            plural_table_name = to_plural(column.foreign_table)
             res = f"""
                       <Grid item md={{12}} xs={{12}}>
                         <BaseLookup
@@ -267,7 +331,7 @@ def template_base_fields(table):
                           helperText={{store.error{column.name}}}
                           error={{store.error{column.name} != ''}}
                           id='id_f_{table_name}_{column.name}'
-                          label={{translate('label:{table_name}AddEditView.{column.name}NavName')}}
+                          label={{translate('label:{table_name}AddEditView.{column.name}')}}
                           value={{store.{column.name}}}
                           type="date"
                           onChange={{(event) => store.handleChange(event)}}
@@ -285,8 +349,8 @@ def template_base_fields(table):
                             <ProtectedCheckbox
                               name="{column.name}"
                               id="id_f_{table_name}_{column.name}"
-                              onChange={{this.handleChange}} size="small"
-                              checked={{this.state.{column.name}}}
+                              onChange={{(event) => store.handleChange(event)}} size="small"
+                              value={{store.{column.name}}}
                             />
                           }}
                         />
@@ -299,7 +363,7 @@ def template_base_fields(table):
                           helperText={{store.error{column.name}}}
                           error={{store.error{column.name} != ''}}
                           id='id_f_{table_name}_{column.name}'
-                          label={{translate('label:{table_name}AddEditView.{column.name}NavName')}}
+                          label={{translate('label:{table_name}AddEditView.{column.name}')}}
                           value={{store.{column.name}}}
                           onChange={{(event) => store.handleChange(event)}}
                           name="{column.name}" 
@@ -350,7 +414,10 @@ def template_save_save(table):
     result = ''
     table_name = table['table']
     for column in table["columns"]:
-        if(column.type == 'int'):
+        if(table["main_column"] == column.name):
+            res = f"""{table["main_column"]}: props.{table["main_column"]} - 0,
+    """
+        elif(column.type == 'int'):
             res = f"""{column.name}: store.{column.name} - 0,
     """
         elif(column.type == 'datetime'):
@@ -360,7 +427,7 @@ def template_save_save(table):
             res = f"""{column.name}: !!store.{column.name},
     """
         elif(column.type == 'nvarchar' or column.type == 'varchar'):
-            res = f"""{column.name}: !!store.{column.name},
+            res = f"""{column.name}: store.{column.name},
     """
         elif (column.type == 'varbinary'):
             continue
@@ -438,7 +505,10 @@ def template_store_load_dictionaries(table):
 def template_store_set_data(table):
     result = ''
     for column in table["columns"]:
-        result += f"""this.{column.name} = json.{column.name}\n\t\t"""
+        if(column.type == 'datetime'):
+            result += f"""this.{column.name} = json.str{column.name}\n\t\t"""
+        else:
+            result += f"""this.{column.name} = json.{column.name}\n\t\t"""
     return result
     
 def template_store_doload_dict(table):
@@ -451,10 +521,21 @@ def template_store_doload_dict(table):
 def template_valid_fields(table):
     result = ''
     for column in table["columns"]:
+        valids = ""
+        if(column.name == PRIMARY_KEY): continue
+        if(column.type == 'datetime'):
+            valids += f"""CheckCorrectDateNullable(event.target.value, {column.name}Errors)\n\t"""
+        if(column.nullable == False):
+            if(column.is_foreign_key):
+                valids += f"""CheckEmptyLookup(event.target.value, {column.name}Errors)\n\t"""
+            else:
+                valids += f"""CheckEmptyTextField(event.target.value, {column.name}Errors)\n\t"""
+
         result += f"""
   var {column.name} = '';
   if (event.target.name === '{column.name}') {{
     var {column.name}Errors = [];
+    {valids}
     {column.name} = {column.name}Errors.join(', ');
     validated('error{column.name}', {column.name});
   }}
@@ -464,6 +545,7 @@ def template_valid_fields(table):
 def template_valid_check_cansave(table):
     result = ''
     for column in table["columns"]:
+        if(column.name == PRIMARY_KEY): continue
         result += f"""&& {column.name} === ''\n\t"""
     return result
 
@@ -473,14 +555,34 @@ def template_index_columns(table):
     for column in table["columns"]:
         if(column.name == 'id' or table["main_column"] == column.name): continue
         label = column.name
-        if(column.is_foreign_key == True):
-            label = column.name + 'NavName'
-        elif(column.type == 'datetime'):
-            label = 'str' + column.name
-        result += f"""{{
+        translate = column.name
+        if(column.type == 'bit'):
+            result += f"""{{
           name: "{column.name}",
           id: "id_g_{table_name}_{column.name}",
-          label: translate("label:{table_name}ListView.{column.name}"),
+          label: translate("label:{table_name}ListView.{translate}"),
+          options: {{
+            filter: true,
+            customHeadLabelRender: (columnMeta) => (<div name={{"name_g_{table_name}_{column.name}_title"}}>{{columnMeta.label}}</div>),
+            customBodyRenderLite: (dataIndex) => {{
+              if (dataIndex >= store.data.length) return null;
+              return <div name={{"name_g_{table_name}_{column.name}"}}>
+                <ProtectedCheckbox checked={{store.data[dataIndex].{column.name}}} />
+              </div>
+            }}
+          }}
+        }},
+        """
+        else:
+            if(column.is_foreign_key == True):
+                label = column.name + 'NavName'
+                translate = column.name + 'NavName'
+            elif(column.type == 'datetime'):
+                label = 'str' + column.name
+            result += f"""{{
+          name: "{column.name}",
+          id: "id_g_{table_name}_{column.name}",
+          label: translate("label:{table_name}ListView.{translate}"),
           options: {{
             filter: true,
             customHeadLabelRender: (columnMeta) => (<div name={{"name_g_{table_name}_{column.name}_title"}}>{{columnMeta.label}}</div>),
@@ -498,6 +600,27 @@ def template_index_is_mtm_popup(table):
         return 'popup'
     else:
         return 'form'
+
+def template_index_is_mtm_column_name(table):
+    if(table['is_mtm']):
+        return f"""
+              {table["main_column"]}={{this.props.{table["main_column"]}}}"""
+    else:
+        return ""
+
+def template_mtm_has_mtm(table):
+    if(len(table['mtms']) != 0):
+        return f"""{{/* start MTM */}}
+            {{store.id > 0 && <MtmTab />}}
+            {{/* end MTM */}}"""
+    else:
+        return ""
+
+def template_mtm_has_mtm_grid(table):
+    if(len(table['mtms']) != 0):
+        return f"""store.id == 0 ? 6 : 12"""
+    else:
+        return "6"
 
 def template_index_load_function(table):
     table_name = table['table']
@@ -547,9 +670,13 @@ TEMPLATE_FUNCS = {
     "template_valid_check_cansave": template_valid_check_cansave,
     "template_index_columns": template_index_columns,
     "template_index_is_mtm_popup": template_index_is_mtm_popup,
+    "template_index_is_mtm_column_name": template_index_is_mtm_column_name,
     "template_index_load_function": template_index_load_function,
     "template_store_index_load_function": template_store_index_load_function,
     "template_routes_import": template_routes_import,
     "template_routes_class": template_routes_class,
     "template_mtm_import": template_mtm_import,
+    "template_locale": template_locale,
+    "template_mtm_has_mtm": template_mtm_has_mtm,
+    "template_mtm_has_mtm_grid": template_mtm_has_mtm_grid,
 }

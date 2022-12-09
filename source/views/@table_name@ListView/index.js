@@ -11,6 +11,7 @@ import @|table_name|@AddEditView from 'src/views/@|table_name|@/@|table_name|@Ad
 import { withTranslation } from 'react-i18next';
 import { observer } from "mobx-react"
 import store from "./store"
+import ProtectedCheckbox from 'src/components/CheckboxForPageGrid';
 
 
 const @|table_name|@ListView = observer(
@@ -55,7 +56,7 @@ const @|table_name|@ListView = observer(
 
             <@|table_name|@AddEditView
               isPopup={true}
-              openPanel={store.openPanel}
+              openPanel={store.openPanel}@|template_index_is_mtm_column_name|@
               id={store.currentId}
               onBtnOkClick={() => {
                 @|template_index_load_function|@

@@ -26,11 +26,9 @@ const @|table_name|@AddEditView = observer(
         <Page title={translate('label:@|table_name|@AddEditView.entityTitle')}>
           <@|table_name|@AddEditBaseView {...this.props}>
 
-            {/* start MTM */}
-            {store.id > 0 && <MtmTab />}
-            {/* end MTM */}
+            @|template_mtm_has_mtm|@
 
-            <Grid container xs={12} md={store.id == 0 ? 6 : 12} style={{ margin: 0, justifyContent: "flex-end" }}>
+            <Grid container xs={12} md={@|template_mtm_has_mtm_grid|@} style={{ margin: 0, justifyContent: "flex-end" }}>
               <Box display="flex" p={2}>
                 <Box m={2}>
                   <ProtectedButton
