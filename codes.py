@@ -1,5 +1,7 @@
 
 from templater import TEMPLATE_FUNCS
+from templaterPgSQL import TEMPLATE_FUNCS as TEMPLATEPGSQL
+from settings import SUBD
 
 
 
@@ -16,7 +18,11 @@ def fill_file(text, table_data):
         func_name = text[open_index + 2: close_index]
 
         res += before_text 
-        template = TEMPLATE_FUNCS[func_name](table_data)
+        if(SUBD == "MSSQL"):
+            template = TEMPLATE_FUNCS[func_name](table_data)
+        else:
+            template = TEMPLATEPGSQL[func_name](table_data)
+
         res += template 
 
         text = text[close_index + 2:]
@@ -39,7 +45,10 @@ def fill_bfile(text, tables_data):
         res += before_text 
         template = ''
         for table_data in tables_data:
-            template += TEMPLATE_FUNCS[func_name](table_data)
+            if(SUBD == "MSSQL"):
+                template += TEMPLATE_FUNCS[func_name](table_data)
+            else:
+                template += TEMPLATEPGSQL[func_name](table_data)
         res += template
 
         text = text[close_index + 2:]

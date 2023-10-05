@@ -1,25 +1,26 @@
-# import pyodbc
-import psycopg2
+import pyodbc
 
-from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_COLUMNS, SQL_FOREIGN_COLUMNS, PGON
-
+from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL
 
 
 def get_tables():
-    need_tables = ["ProjectMember", "Project"]
+    main_tables = ["Employee", "Student", "Course", "Lesson", "Group"]
     mtm_tables = {
-        "ProjectMember": "Project",
-        # "meetingReport": "VideoMeeting",
+        "Subject": "CourseName", 
+        "LessonStatusHistory": "Lesson", 
+        "EmployeeInCourse": "Course", 
+        "EmployeeRole": "Employee",
+        "StudentInGroup": "Group",
+        "StudentInLesson": "Lesson",
+        "PassedCourse": "Student",
+        "StudentContact": "Student",
+        "CourseStatusHistory": "Course"
     }
-    if(SUBD == 'MSSQL'):
-        cnxn = psycopg2.connect(CONNECTING_STRING)
-    else:
-        cnxn = psycopg2.connect(**PGON)
-
+    cnxn = pyodbc.connect(CONN_STR_PGSQL)
     cursor = cnxn.cursor()
 
-    
-    cursor.execute(SQL_COLUMNS)
+    text_columns = """ SELECT TABLE_NAME, COLUMN_NAME, IS_NULLABLE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS ORDER by "TABLE_NAME" """
+    cursor.execute(text_columns)
 
     rows = []
     table_names = []
@@ -27,8 +28,6 @@ def get_tables():
 
     for row in cursor.fetchall():
         if(row[0] == 'sysdiagrams'): continue
-        if(len(need_tables) != 0 and row[0] not in need_tables):
-            continue
         rows.append(row)
         is_null = True if row[2] == "YES" else False
         column = Column(row[1], is_null, row[3], False)
@@ -41,13 +40,49 @@ def get_tables():
         else:
             all_data[table_names.index(row[0])]["columns"].append(column)
 
-    
-    cursor.execute(SQL_FOREIGN_COLUMNS)
 
+    # text_constraints = """SELECT CONSTRAINT_NAME, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE """
+    # cursor.execute(text_constraints)
+
+    # cons_row = []
+    # foreign_tables = []
+    # foreign_columns = []
+
+    # for row in cursor.fetchall():
+    #     if(row[0].upper().startswith("FK_")):
+    #         cons_row.append(row)
+    #         foreign_tables.append(row[1])
+    #         foreign_columns.append(row[2])
+            
+    # for i in range(len(foreign_tables)):
+    #     for j in range(len(all_data)):
+    #         if(all_data[j]["table"] == foreign_tables[i]):
+    #             cols = all_data[j]["columns"]
+    #             for h in range(len(cols)):
+    #                 if(foreign_columns[i] == cols[h].name):
+    #                     all_data[j]["columns"][h].is_foreign_key = True
+    #                     break
+    #             break
+
+
+    foreign_tables_text =  """
+    SELECT 
+    OBJECT_NAME(f.parent_object_id) table_name,
+    COL_NAME(fc.parent_object_id,fc.parent_column_id) col_name,
+    t.name foreign_table
+    FROM 
+    sys.foreign_keys AS f
+    INNER JOIN 
+    sys.foreign_key_columns AS fc 
+        ON f.OBJECT_ID = fc.constraint_object_id
+    INNER JOIN 
+    sys.tables t 
+        ON t.OBJECT_ID = fc.referenced_object_id
+    Order by table_name
+    """
+    cursor.execute(foreign_tables_text)
     foreign_tables = []
     for row in cursor.fetchall():
-        if(len(need_tables) != 0 and row[0] not in need_tables):
-            continue
         foreign_tables.append(row)
 
     for table in all_data:

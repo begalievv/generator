@@ -18,10 +18,10 @@ def template_dto(table):
     result = ""
 
     for column in table["columns"]:
-        if (column.type == 'nvarchar' or column.type == 'varchar' or column.type == 'char' or column.type == 'xml' or column.type == 'image'):
+        if (column.type == 'character varying' or column.type == 'character'):
             res = "public string " + column.name + " { get; set; }\n\t\t"
 
-        elif (column.type == 'int' or column.type == 'decimal'):
+        elif (column.type == 'integer' or column.type == 'double precision'):
             if (column.nullable == True):
                 if (column.is_foreign_key == True):
                     res = "public int? " + column.name + \
@@ -37,13 +37,13 @@ def template_dto(table):
                 else:
                     res = "public int " + column.name + " { get; set; }\n\t\t"
 
-        elif (column.type == 'bit'):
+        elif (column.type == 'boolean'):
             if (column.nullable == True):
                 res = "public bool? " + column.name + " { get; set; }\n\t\t"
             else:
                 res = "public bool " + column.name + " { get; set; }\n\t\t"
 
-        elif (column.type == 'datetime' or column.type == 'date'):
+        elif (column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             if (column.nullable == True):
                 res = 'public DateTime? ' + column.name + \
                     ' { get; set; }\n\t\t' + 'public string str' + \
@@ -186,19 +186,19 @@ def template_converter(table):
 def template_model(table):
     result = ""
     for column in table["columns"]:
-        if (column.type == 'nvarchar' or column.type == 'varchar' or column.type == 'char' or column.type == 'xml' or column.type == 'image'):
+        if (column.type == 'character varying' or column.type == 'character'):
             res = "public string " + column.name + " { get; set; }\n\t\t"
-        elif (column.type == 'int' or column.type == 'decimal'):
+        elif (column.type == 'integer' or column.type == 'double precision'):
             if (column.nullable == True):
                 res = "public int? " + column.name + " { get; set; }\n\t\t"
             else:
                 res = "public int " + column.name + " { get; set; }\n\t\t"
-        elif (column.type == 'bit'):
+        elif (column.type == 'boolean'):
             if (column.nullable == True):
                 res = "public bool? " + column.name + " { get; set; }\n\t\t"
             else:
                 res = "public bool " + column.name + " { get; set; }\n\t\t"
-        elif (column.type == 'datetime' or column.type == 'date'):
+        elif (column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             if (column.nullable == True):
                 res = f"""public DateTime? {column.name} {{ get; set; }}
         public string str{column.name}
@@ -325,7 +325,7 @@ def template_base_fields(table):
                         </BaseLookup>
                       </Grid>"""
 
-        elif (column.type == 'datetime' or column.type == 'date'):
+        elif (column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             res = f"""
                       <Grid item md={{12}} xs={{12}}>
                         <ProtectedDateTimeField
@@ -339,7 +339,7 @@ def template_base_fields(table):
                           name="{column.name}"/>
                       </Grid>"""
 
-        elif(column.type == 'bit'):
+        elif(column.type == 'boolean'):
             res = f"""
                       <Grid item md={{12}} xs={{12}}>
                         <FormControlLabel
@@ -357,7 +357,7 @@ def template_base_fields(table):
                         />
                       </Grid>"""
 
-        elif (column.type == 'nvarchar' or column.type == 'varchar' or column.type == 'int' or column.type == 'char' or column.type == 'decimal' or column.type == 'xml' or column.type == 'image'):
+        elif (column.type == 'character varying' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision'):
             res = f"""
                       <Grid item md={{12}} xs={{12}}>
                         <ProtectedTextField
@@ -418,20 +418,20 @@ def template_save_save(table):
         if(table["main_column"] == column.name):
             res = f"""{table["main_column"]}: props.{table["main_column"]} - 0,
     """
-        elif(column.type == 'int' or column.type == 'decimal'):
+        elif(column.type == 'integer' or column.type == 'double precision'):
             if(column.nullable == True):
                 res = f"""{column.name}: store.{column.name} - 0 == 0 ? null : store.{column.name} - 0,
     """
             else:
                 res = f"""{column.name}: store.{column.name} - 0,
     """
-        elif(column.type == 'datetime' or column.type == 'date'):
+        elif(column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             res = f"""str{column.name}: store.{column.name},
     """
-        elif(column.type == 'bit'):
+        elif(column.type == 'boolean'):
             res = f"""{column.name}: !!store.{column.name},
     """
-        elif(column.type == 'nvarchar' or column.type == 'varchar' or column.type == 'char' or column.type == 'xml' or column.type == 'image'):
+        elif(column.type == 'character varying' or column.type == 'character'):
             res = f"""{column.name}: store.{column.name},
     """
         elif (column.type == 'varbinary'):
@@ -445,11 +445,11 @@ def template_store_init(table):
     result = ''
     for column in table["columns"]:
         if(column.name == PRIMARY_KEY): continue
-        if(column.type == 'int' or column.type == 'decimal'):
+        if(column.type == 'integer' or column.type == 'double precision'):
             res = f"""{column.name} = 0\n\t"""
-        elif(column.type == 'nvarchar' or column.type == 'varchar' or column.type or column.type == 'datetime' or column.type == 'char' or column.type == 'date' or column.type == 'xml' or column.type == 'image'):
+        elif(column.type == 'character varying' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             res = f"""{column.name} = ""\n\t"""
-        elif(column.type == 'bit'):
+        elif(column.type == 'boolean'):
             res = f"""{column.name} = false\n\t"""
         elif (column.type == 'varbinary'):
             continue
@@ -470,11 +470,11 @@ def template_store_clear(table):
     result = ''
     for column in table["columns"]:
         if(column.name == PRIMARY_KEY): continue
-        if(column.type == 'int' or column.type == 'decimal'):
+        if(column.type == 'integer' or column.type == 'double precision'):
             res = f"""this.{column.name} = 0\n\t\t"""
-        elif(column.type == 'nvarchar' or column.type == 'varchar' or column.type or column.type == 'datetime' or column.type == 'char' or column.type == 'date' or column.type == 'xml' or column.type == 'image'):
+        elif(column.type == 'character varying' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             res = f"""this.{column.name} = ""\n\t\t"""
-        elif(column.type == 'bit'):
+        elif(column.type == 'boolean'):
             res = f"""this.{column.name} = false\n\t\t"""
         elif (column.type == 'varbinary'):
             continue
@@ -510,7 +510,7 @@ def template_store_load_dictionaries(table):
 def template_store_set_data(table):
     result = ''
     for column in table["columns"]:
-        if(column.type == 'datetime' or column.type == 'date'):
+        if(column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             result += f"""this.{column.name} = json.str{column.name}\n\t\t"""
         else:
             result += f"""this.{column.name} = json.{column.name}\n\t\t"""
@@ -528,7 +528,7 @@ def template_valid_fields(table):
     for column in table["columns"]:
         valids = ""
         if(column.name == PRIMARY_KEY): continue
-        if(column.type == 'datetime' or column.type == 'date'):
+        if(column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
             valids += f"""CheckCorrectDateNullable(event.target.value, {column.name}Errors)\n\t"""
         if(column.nullable == False):
             if(column.is_foreign_key):
@@ -562,7 +562,7 @@ def template_index_columns(table):
         if(column.name == 'id' or table["main_column"] == column.name): continue
         label = column.name
         translate = column.name
-        if(column.type == 'bit'):
+        if(column.type == 'boolean'):
             result += f"""{{
           name: "{column.name}",
           id: "id_g_{table_name}_{column.name}",
@@ -583,7 +583,7 @@ def template_index_columns(table):
             if(column.is_foreign_key == True):
                 label = column.name + 'NavName'
                 translate = column.name + 'NavName'
-            elif(column.type == 'datetime' or column.type == 'date'):
+            elif(column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
                 label = 'str' + column.name
             result += f"""{{
           name: "{column.name}",
@@ -644,12 +644,126 @@ def template_store_index_load_function(table):
         return f"""load{to_plural(table_name)}() {{
         var url = '/{table_name}/GetAll'"""
 
-def template_fast_input_load_dicts(table):
-    return ""
+
+def template_store_load_function(table):
     table_name = table['table']
     if(table['is_mtm']):
-        return f"""
-            store.loadMedicaments(this.props.idMain)"""
+        return f'store.load{to_plural(table_name)}(this.props.idMain)'
+    else:
+        return f'store.load{to_plural(table_name)}()'
+    
+
+def template_fast_input_load_dicts(table):
+    table_name = table['table']
+    result = ""
+    for column in table["columns"]:
+        if(column.is_foreign_key == True):
+            result += f"""storeAddEdit.load{to_plural(column.foreign_table)}()
+            """
+    return result
+
+def template_fast_input_change_main_id(table):
+    table_name = table['table']
+    if(table['is_mtm']):
+        return f"""storeAddEdit.{table["main_column"]} = this.props.idMain - 0"""
+    else:
+        return ""
+    
+
+def template_fast_input_columns(table):
+    table_name = table['table']
+    result = ""
+    for column in table["columns"]:
+        if(column.name=='id'): continue
+        if(column.is_foreign_key == True):
+            result += f"""{{
+                    fieldName: '{column.name}NavName',
+                    width: null //or number from 1 to 12
+                }},
+                """
+        else:
+            result += f"""{{
+                    fieldName: '{column.name}',
+                    width: null //or number from 1 to 12
+                }},
+                """
+    return result
+
+def template_fastinput_fields(table):
+    result = ''
+    table_name = table['table']
+
+    for column in table["columns"]:
+        if (column.name == PRIMARY_KEY or table["main_column"] == column.name): continue
+        if (column.is_foreign_key == True):
+            plural_table_name = to_plural(column.foreign_table)
+            res = f"""
+                                <Grid item md={{6}} xs={{6}}>
+                                    <BaseLookup
+                                        helperText={{storeAddEdit.error{column.name}}}
+                                        error={{storeAddEdit.error{column.name} != ''}}
+                                        id='id_f_{table_name}_{column.name}'
+                                        label={{translate('label:{table_name}AddEditView.{column.name}NavName')}}
+                                        value={{storeAddEdit.{column.name}}}
+                                        onChange={{(event) => storeAddEdit.handleChange(event)}}
+                                        data={{storeAddEdit.{plural_table_name}}}
+                                        name="{column.name}">
+                                    </BaseLookup>
+                                </Grid>"""
+
+        elif (column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
+            res = f"""
+                                <Grid item md={{6}} xs={{6}}>
+                                    <ProtectedDateTimeField
+                                        helperText={{storeAddEdit.error{column.name}}}
+                                        error={{storeAddEdit.error{column.name} != ''}}
+                                        id='id_f_{table_name}_{column.name}'
+                                        label={{translate('label:{table_name}AddEditView.{column.name}')}}
+                                        value={{storeAddEdit.{column.name}}}
+                                        type="date"
+                                        onChange={{(event) => storeAddEdit.handleChange(event)}}
+                                        name="{column.name}"
+                                    />
+                                </Grid>"""
+
+        elif(column.type == 'boolean'):
+            res = f"""
+                                <Grid item md={{12}} xs={{12}}>
+                                    <FormControlLabel
+                                        label={{<span id="id_f_{table_name}_{column.name}-label">
+                                            {{translate('label:{table_name}AddEditView.{column.name}')}}
+                                        </span>}}
+                                        control={{
+                                            <ProtectedCheckbox
+                                                name="{column.name}"
+                                                id="id_f_{table_name}_{column.name}"
+                                                onChange={{(event) => store.handleChange(event)}} size="small"
+                                                value={{store.{column.name}}}
+                                            />
+                                        }}
+                                    />
+                                </Grid>"""
+
+        elif (column.type == 'character varying' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision'):
+            res = f"""
+                                <Grid item md={{6}} xs={{6}}>
+                                    <ProtectedTextField
+                                        helperText={{storeAddEdit.error{column.name}}}
+                                        error={{storeAddEdit.error{column.name} != ''}}
+                                        id='id_f_{table_name}_{column.name}'
+                                        label={{translate('label:{table_name}AddEditView.{column.name}')}}
+                                        value={{storeAddEdit.{column.name}}}
+                                        onChange={{(event) => storeAddEdit.handleChange(event)}}
+                                        name="{column.name}" 
+                                    />
+                                </Grid>"""
+
+        elif (column.type == 'varbinary'):
+            continue
+        else:
+            raise Exception('Не могу найти тип - "' + column.type + '"')
+        result += res
+    return result
 
 TEMPLATE_FUNCS = {
     "template_dto": template_dto,
@@ -693,4 +807,8 @@ TEMPLATE_FUNCS = {
     "template_mtm_has_mtm": template_mtm_has_mtm,
     "template_mtm_has_mtm_grid": template_mtm_has_mtm_grid,
     "template_fast_input_load_dicts": template_fast_input_load_dicts,
+    "template_fast_input_columns": template_fast_input_columns,
+    "template_store_load_function": template_store_load_function,
+    "template_fastinput_fields": template_fastinput_fields,
+    "template_fast_input_change_main_id": template_fast_input_change_main_id
 }
