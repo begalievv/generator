@@ -1,7 +1,7 @@
 # import pyodbc
 import psycopg2
 
-from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_COLUMNS, SQL_FOREIGN_COLUMNS, PGON
+from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_COLUMNS, SQL_FOREIGN_COLUMNS, PGCON
 
 
 
@@ -14,7 +14,7 @@ def get_tables():
     if(SUBD == 'MSSQL'):
         cnxn = psycopg2.connect(CONNECTING_STRING)
     else:
-        cnxn = psycopg2.connect(**PGON)
+        cnxn = psycopg2.connect(**PGCON)
 
     cursor = cnxn.cursor()
 

@@ -52,7 +52,7 @@ FROM
 WHERE constraint_type = 'FOREIGN KEY';
 """
 
-PGON = {
+PGCON = {
     "user":"postgres",
     "password":"dimaMolodec123",
     "host":"194.87.102.173",
