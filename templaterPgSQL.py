@@ -18,7 +18,7 @@ def template_dto(table):
     result = ""
 
     for column in table["columns"]:
-        if (column.type == 'character varying' or column.type == 'character'):
+        if (column.type == 'character varying' or column.type == 'character' or column.type == 'text' or column.type == 'jsonb'):
             res = "public string " + column.name + " { get; set; }\n\t\t"
 
         elif (column.type == 'integer' or column.type == 'double precision'):
@@ -186,7 +186,7 @@ def template_converter(table):
 def template_model(table):
     result = ""
     for column in table["columns"]:
-        if (column.type == 'character varying' or column.type == 'character'):
+        if (column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'jsonb'):
             res = "public string " + column.name + " { get; set; }\n\t\t"
         elif (column.type == 'integer' or column.type == 'double precision'):
             if (column.nullable == True):
@@ -357,7 +357,7 @@ def template_base_fields(table):
                         />
                       </Grid>"""
 
-        elif (column.type == 'character varying' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision'):
+        elif (column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision' or column.type == 'jsonb'):
             res = f"""
                       <Grid item md={{12}} xs={{12}}>
                         <ProtectedTextField
@@ -431,7 +431,7 @@ def template_save_save(table):
         elif(column.type == 'boolean'):
             res = f"""{column.name}: !!store.{column.name},
     """
-        elif(column.type == 'character varying' or column.type == 'character'):
+        elif(column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'jsonb'):
             res = f"""{column.name}: store.{column.name},
     """
         elif (column.type == 'varbinary'):
@@ -447,7 +447,7 @@ def template_store_init(table):
         if(column.name == PRIMARY_KEY): continue
         if(column.type == 'integer' or column.type == 'double precision'):
             res = f"""{column.name} = 0\n\t"""
-        elif(column.type == 'character varying' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
+        elif(column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone' or column.type == 'jsonb'):
             res = f"""{column.name} = ""\n\t"""
         elif(column.type == 'boolean'):
             res = f"""{column.name} = false\n\t"""
@@ -472,7 +472,7 @@ def template_store_clear(table):
         if(column.name == PRIMARY_KEY): continue
         if(column.type == 'integer' or column.type == 'double precision'):
             res = f"""this.{column.name} = 0\n\t\t"""
-        elif(column.type == 'character varying' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone'):
+        elif(column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone' or column.type == 'jsonb'):
             res = f"""this.{column.name} = ""\n\t\t"""
         elif(column.type == 'boolean'):
             res = f"""this.{column.name} = false\n\t\t"""
@@ -744,7 +744,7 @@ def template_fastinput_fields(table):
                                     />
                                 </Grid>"""
 
-        elif (column.type == 'character varying' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision'):
+        elif (column.type == 'character varying' or column.type == 'text' or column.type == 'character' or column.type == 'integer' or column.type == 'double precision' or column.type == 'jsonb'):
             res = f"""
                                 <Grid item md={{6}} xs={{6}}>
                                     <ProtectedTextField

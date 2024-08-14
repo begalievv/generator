@@ -6,10 +6,9 @@ from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_C
 
 
 def get_tables():
-    need_tables = ["ProjectMember", "Project"]
+    need_tables = ["Y_Brigade110", "Y_Card110", "Y_StatusCard110", "Y_Post110"]
     mtm_tables = {
-        "ProjectMember": "Project",
-        # "meetingReport": "VideoMeeting",
+        "Y_Brigade110": "Y_Card110"
     }
     if(SUBD == 'MSSQL'):
         cnxn = psycopg2.connect(CONNECTING_STRING)
@@ -85,12 +84,12 @@ def get_tables():
                         table["mtms"].append([key, c_column])
                         break
 
-    return all_data
     # for table in all_data:
     #     print(table['table'], ' ----- ', table["mtms"])
-        # print(table['table'], ' ----- ', table["is_main"], ', ', table["mtms"])
-        # for column in table['columns']:
-        #     print(column.name, ' ---- ', column.is_foreign_key, ' ---- ', column.foreign_table)
+    #     print(table['table'], ' ----- ', table["is_main"], ', ', table["mtms"])
+    #     for column in table['columns']:
+    #         print(column.name, ' ---- ', column.is_foreign_key, ' ---- ', column.foreign_table)
+    return all_data
 
 
 
