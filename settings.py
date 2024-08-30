@@ -54,10 +54,10 @@ WHERE constraint_type = 'FOREIGN KEY';
 
 PGCON = {
     "user":"postgres",
-    "password":"dimaMolodec123",
-    "host":"194.87.102.173",
-    "port":"5433",
-    "database":"2t_database_1909"
+    "password":"00890",
+    "host":"127.0.0.1",
+    "port":"5432",
+    "database":"bga_test"
 }
 
 

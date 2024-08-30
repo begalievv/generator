@@ -6,10 +6,9 @@ from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_C
 
 
 def get_tables():
-    need_tables = ["ProjectMember", "Project"]
+    need_tables = ["org_structure"]
     mtm_tables = {
-        "ProjectMember": "Project",
-        # "meetingReport": "VideoMeeting",
+        # "work_day": "work_schedule",
     }
     if(SUBD == 'MSSQL'):
         cnxn = psycopg2.connect(CONNECTING_STRING)

@@ -7,6 +7,8 @@ p = inflect.engine()
 def table_name(table):
     return table["table"]
 
+def get_main_column(table):
+    return table["main_column"]
 
 def table_name_plural(table):
     return p.plural(table["table"])
@@ -447,10 +449,12 @@ def template_store_init(table):
         if(column.name == PRIMARY_KEY): continue
         if(column.type == 'int' or column.type == 'decimal'):
             res = f"""{column.name} = 0\n\t"""
-        elif(column.type == 'nvarchar' or column.type == 'varchar' or column.type or column.type == 'datetime' or column.type == 'char' or column.type == 'date' or column.type == 'xml' or column.type == 'image'):
+        elif(column.type == 'nvarchar' or column.type == 'varchar' or column.type or column.type == 'char' or column.type == 'xml' or column.type == 'image'):
             res = f"""{column.name} = ""\n\t"""
         elif(column.type == 'bit'):
             res = f"""{column.name} = false\n\t"""
+        elif(column.type == 'datetime' or column.type == 'date'):
+            res = f"""{column.name} = null\n\t"""
         elif (column.type == 'varbinary'):
             continue
         else:
@@ -655,6 +659,7 @@ TEMPLATE_FUNCS = {
     "template_dto": template_dto,
     "table_name_plural": table_name_plural,
     "table_name": table_name,
+    "get_main_column": get_main_column,
     "template_service": template_service,
     "template_irepository": template_irepository,
     "template_iservice": template_iservice,
