@@ -52,28 +52,21 @@ FROM
 WHERE constraint_type = 'FOREIGN KEY';
 """
 
-# PGCON = {
-#     "user":"postgres",
-#     "password":"dimaMolodec123",
-#     "host":"194.87.102.173",
-#     "port":"5433",
-#     "database":"2t_database_1909"
-# }
-
 PGCON = {
     "user":"postgres",
     "password":"00890",
     "host":"127.0.0.1",
-    "port":"5432",
-    "database":"amb_050824"
+    "port":"5433",
+    "database":"cabinet_2103"
 }
-# PGCON = {
-#     "user":"postgres",
-#     "password":"engageRocket@2023+",
-#     "host":"81.200.146.76",
-#     "port":"5434",
-#     "database":"EngageRocket"
-# }
+
+PGCONSERVER = {
+    "host":"188.127.225.48",
+    "user":"postgres",
+    "password":"d883126V8ZM49e502b727LW6iL37jDo7SEto1a7VX6fHX9no0tzf644QC8DNUT3M",
+    "port":"5434",
+    "database":"clean1"
+}
 
 
         # cnxn = psycopg2.connect(user="postgres",

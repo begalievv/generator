@@ -6,4 +6,4 @@
 
 
 
-      @|template_routes_class|@
+              @|template_routes_class|@

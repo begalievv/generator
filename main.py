@@ -1,4 +1,4 @@
-import os, shutil
+import os, shutil, time
 from funcs import get_tables
 from codes import fill_file, fill_bfile
 
@@ -11,7 +11,9 @@ def main():
     tables_data = get_tables()
     tree_folders = []
     for table_data in tables_data:
-        table_name = table_data["table"]
+        table_name = table_data["table_pascal_case_name"]
+        table_name_pascal = table_data["table_pascal_case_name"]
+        table_name_camel = table_data["table_camel_case_name"]
 
         for folder in os.walk("source"):
             if(folder[0] == "source"): continue
@@ -33,6 +35,8 @@ def main():
                         text = fill_file(cont, table_data)
 
                     file_name =  file.replace('@table_name@', table_name)
+                    file_name =  file_name.replace('@table_name_pascal@', table_name_pascal)
+                    file_name =  file_name.replace('@table_name_camel@', table_name_camel)
                     f = open(path_dir + "/" + file_name, "a", encoding='utf-8')
                     
                     f.write(text)
@@ -40,7 +44,10 @@ def main():
 
             for tree_fold in tree_folders:
                 if(tree_fold in folder[0]):
-                    folder_name = table_name + '/' + tree_fold.replace('@table_name@', table_name)
+                    folder_name = table_name_pascal + '/' + tree_fold
+                    folder_name = folder_name.replace('@table_name@', table_name)
+                    folder_name = folder_name.replace('@table_name_pascal@', table_name_pascal)
+                    folder_name = folder_name.replace('@table_name_camel@', table_name_camel)
                     full_path = folder[0].replace(tree_fold, folder_name)
                     for file in folder[2]:
                         with open(folder[0] + '/' + file, encoding='utf-8') as f:
@@ -48,9 +55,11 @@ def main():
                             text = fill_file(cont, table_data)
 
                         file_name =  file.replace('@table_name@', table_name)
+                        file_name =  file_name.replace('@table_name_pascal@', table_name_pascal)
+                        file_name =  file_name.replace('@table_name_camel@', table_name_camel)
                         if not os.path.exists(full_path.replace('source', 'result')):
                             os.makedirs(full_path.replace('source', 'result'))
-                        f = open((full_path + '/' + file).replace('source', 'result'), "a", encoding='utf-8')
+                        f = open((full_path + '/' + file_name).replace('source', 'result'), "a", encoding='utf-8')
                         f.write(text)
                         f.close()
 
