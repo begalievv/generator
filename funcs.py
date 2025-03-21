@@ -5,16 +5,16 @@ from settings import CONNECTING_STRING, PRIMARY_KEY, SUBD, CONN_STR_PGSQL, SQL_C
 
 
 def get_tables():
-    # need_tables = ["test_main_table", "test_dict_table", "test_mtm_table"]
-    # mtm_tables = {
-    #     "test_mtm_table": "test_main_table",
-    # }
-    need_tables = ["organization_type", "customer", "customer_contact", "representative", "customer_requisite", "representative_type", "representative_contact"]
+    need_tables = ["test_main_table", "test_dict_table", "test_mtm_table"]
     mtm_tables = {
-        "customer_contact": "customer",
-        "customer_requisite": "customer",
-        "representative": "customer",
+        "test_mtm_table": "test_main_table",
     }
+    # need_tables = ["organization_type", "customer", "customer_contact", "representative", "customer_requisite", "representative_type", "representative_contact"]
+    # mtm_tables = {
+    #     "customer_contact": "customer",
+    #     "customer_requisite": "customer",
+    #     "representative": "customer",
+    # }
     if (SUBD == 'MSSQL'):
         cnxn = psycopg2.connect(CONNECTING_STRING)
     else:

@@ -731,7 +731,17 @@ def template_index_columns(table):
         if (column.name == "created_at" or column.name == "updated_at" or column.name == "created_by" or column.name == "updated_by"):
             continue
         label = column.name
-        result += f"""
+        if column.type == 'timestamp without time zone' or column.type == 'timestamp with time zone':
+            result += f"""
+    {{
+      field: '{column.name_camel}',
+      headerName: translate("label:{column.table_name_pascal}ListView.{column.name_camel}"),
+      flex: 1,
+      renderCell: (param) => (<div data-testid="table_{column.table_name_pascal}_column_{column.name_camel}"> {{param.row.{column.name_camel} ? dayjs(param.row.{column.name_camel})?.format("DD.MM.YYYY HH:mm") : ""}} </div>),
+      renderHeader: (param) => (<div data-testid="table_{column.table_name_pascal}_header_{column.name_camel}">{{param.colDef.headerName}}</div>)
+    }},"""
+        else:
+            result += f"""
     {{
       field: '{column.name_camel}',
       headerName: translate("label:{column.table_name_pascal}ListView.{column.name_camel}"),
